@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>週間報告書</title>
+	<link rel="stylesheet" href="./css/bootstrap.min.css" />
+	<link rel="stylesheet" href="./css/bootstrap-datepicker3.min.css" />
+	<link rel="stylesheet" href="./css/custom-theme/jquery-ui-1.10.3.custom.css" />
+
+
+	<style type="text/css">
+
+		td, th {
+			padding: 4px;
+			text-align: center;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+		<form id="form" method="post">
+			<div class="row">
+				<div class="col-md-12 col-xs-18">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3>週間報告書</h3>
+						</div>
+
+						<div class="panel-body">
+							<div id="errors">
+							</div>
+							<div class="form-group form-group-sm">
+								<label>社員番号<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="staffId" name="staffId" maxlength = "3" class="form-control" style="width: 80px;" />
+									</li>
+									<li>
+										<span id="staffIdError" class="text-danger error"></span>
+									</li>
+								</ul>
+							</div>
+							<div class="form-group form-group-sm">
+								<label>氏名<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="lastName" name="lastName" class="form-control" placeholder="姓" style="width: 80px;" />
+									</li>
+									<li>
+										
+										<input type="text" id="firstName" name="firstName" class="form-control" placeholder="名" style="width: 80px;" />
+									</li>
+									<li>
+										<span id="firstNameError" class="text-danger error"></span>
+										<span id="lastNameError" class="text-danger error"></span>
+									</li>
+								</ul>
+							</div>
+							<div class="form-group form-group-sm">
+								<label>メールアドレス<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="localOfFrom" name="localOfFrom" class="form-control" style="width: 150px;" />
+									</li>
+									<li>
+										<select id="domainOfFrom" name="domainOfFrom" class="form-control" style="width: 150px;">
+											<option value="@acrovision.jp">@acrovision.jp</option>
+											<option value="@acrovision.co.jp">@acrovision.co.jp</option>
+										</select>
+									</li>
+									<li>
+										<span id="localOfFromError" class="text-danger error"></span>
+										<span id="domainOfFromError" class="text-danger error"></span>
+									</li>
+								</ul>
+							</div>
+
+							<hr/>
+
+							<div id="toArea" class="form-group form-group-sm">
+								<label>[全内容]送信先メールアドレス<span class="text-danger">&nbsp;*</span>&nbsp;※上長/担当営業を想定</label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="localOfTo" name="localOfTo" class="form-control" style="width: 150px;" />
+									</li>
+									<li>
+										<select id="domainOfTo" name="domainOfTo" class="form-control" style="width: 150px;">
+											<option>@acrovision.jp</option>
+											<option>@acrovision.co.jp</option>
+										</select>
+									</li>
+									<li>
+										<button type="button" id="addTo" class="btn btn-primary btn-sm">追加</button>
+										<span>※追加ボタンを押下してください</span>
+									</li>
+									<li>
+										<span id="toError" class="text-danger error"></span>
+									</li>
+								</ul>
+								<div id="listOfTo">
+									<div class = "input-group" style = "padding: 4px 4px 4px 0px;">
+										<input type = "text" id = "sendTo0" name = "sendTo" class = "form-control sendTo" value = "goto.masaki@acrovision.jp" readonly = "readonly" />
+										<div class = "input-group-btn">
+											<button type = "button" id="deleteTo0" name="deleteTo" class="btn btn-sm btn-default btn-del" value="sendTo">
+												<span class = "glyphicon glyphicon-remove" aria-hidden="true"></span>
+											</button>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div id="ccArea" class="form-group form-group-sm">
+								<label>[一部内容]送信先メールアドレス&nbsp;※メンバーを想定</label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="localOfCc" name="localOfCc" class="form-control" style="width: 150px;" />
+									</li>
+									<li>
+										<select id="domainOfCc" name="domainOfCc" class="form-control" style="width: 150px;">
+											<option>@acrovision.jp</option>
+											<option>@acrovision.co.jp</option>
+										</select>
+									</li>
+									<li>
+										<button type="button" id="addCc" class="btn btn-primary btn-sm">追加</button>
+										<span>※追加ボタンを押下してください</span>
+									</li>
+									<li>
+										<span id="ccError" class="text-danger error"></span>
+									</li>
+								</ul>
+								<div id="listOfCc"></div>
+							</div>
+
+							<div class="form-group form-group-sm">
+								<label>全社員にメールを送信しますか？&nbsp;※一部内容が送信されます</label><br/>
+								<ul class="list-inline">
+									<li>
+										<label class="radio-inline">
+											<input type="radio"	id="allEmployeeSendMail1" name="allEmployeeSendMail" value="0" checked="checked"/>いいえ
+										</label>
+									</li>
+									<li>
+										<label class="radio-inline">
+											<input type="radio" id="allEmployeeSendMail2" name="allEmployeeSendMail" value="1"/>はい
+										</label>
+									</li>
+								</ul>
+							</div>
+
+							<hr/>
+
+							<div class="form-group form-group-sm">
+								<label>報告期間<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="text" id="periodFrom" name="periodFrom" class="form-control datepicker" placeholder="From" readonly="readonly" style="width: 100px;" />
+
+									</li>
+									<li>
+										<span>から</span> 
+									</li>
+									<li>
+										<input type="text" id="periodTo" name="periodTo" class="form-control datepicker" placeholder="To" readonly="readonly" style="width: 100px;" />
+										
+									</li>
+									<li>
+										<span>まで</span>
+									</li>
+									<li>
+										<span id="periodFromError" class="text-danger error"></span>
+										<span id="periodToError" class="text-danger error"></span>
+									</li>
+								</ul>
+							</div>
+
+							<hr/>
+
+							<div class="form-group">
+								<label>遅刻、欠勤、早退の連絡回数<span class="text-danger">&nbsp;*</span></label>
+								<table>
+									<tr>
+										<td></td>
+										<td>
+											<span>遅刻</span>
+										</td>
+										<td>
+											<span>欠勤</span>
+										</td>
+										<td>
+											<span>早退</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span>当日</span>
+										</td>
+										<td>
+											<select id="lateCountByTheDay" name="lateCountByTheDay" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+										</td>
+										<td>
+											<select id="absenceCountByTheDay" name="absenceCountByTheDay" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+										</td>
+										<td>
+											<select id="leaveCountByTheDay" name="leaveCountByTheDay" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span>前日まで</span>
+										</td>
+										<td>
+											<select id="absenceCountByTheDayBefore" name="absenceCountByTheDayBefore" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+										</td>
+										<td>
+											<select id="lateCountByTheDayBefore" name="lateCountByTheDayBefore" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+
+										</td>
+										<td>
+											<select id="leaveCountByTheDayBefore" name="leaveCountByTheDayBefore" class="form-control input-sm" style="text-align:center">
+												<option>0</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+												<option>6</option>
+												<option>7</option>
+											</select>
+										</td>
+									</tr>
+								</table>
+							</div>
+
+							<hr/>
+
+							<div class="form-group">
+								<label>周りの人から受けた注意・指摘・クレーム<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="radio"	id="claim1" name="claim" value="なし"/>なし
+									</li>
+									<li>
+										<input type="radio" id="claim2" name="claim" value="あり"/>あり
+									</li>
+								</ul>
+								<div class="toggleDiv">
+									<label>内容<span class="text-danger">&nbsp;*</span></label>
+									<span id="claimDetailsError" class="text-danger error"></span>
+									<textarea id="claimDetails" name="claimDetails" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<hr/>
+
+							<h4>仕事上の悩み・要望/プライベートな悩み・要望</h4>
+							<div class="form-group">
+								<label>仕事上の悩み・要望<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="radio"	id="workTroubleOrDemand1" name="workTroubleOrDemand" value="なし"/>なし
+									</li>
+									<li>
+										<input type="radio" id="workTroubleOrDemand2" name="workTroubleOrDemand" value="あり"/>あり
+									</li>
+								</ul>
+								<div class="toggleDiv" id="workDiv">
+									<label>仕事上の悩み<span class="text-danger">&nbsp;*</span></label>
+									<span id="workTroubleDetailsError" class="text-danger error"></span>
+									<textarea id="workTroubleDetails" name="workTroubleDetails" class="form-control" rows="4" ></textarea>
+									<label>仕事上の要望<span class="text-danger">&nbsp;*</span></label>
+									<span id="workDemandDetailsError" class="text-danger error"></span>
+									<textarea id="workDemandDetails" name="workDemandDetails" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>プライベートな悩み要望<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<label class="radio-inline"><input type="radio"	id="privateTroubleOrDemand1" name="privateTroubleOrDemand" value="なし"/>なし</label>
+									</li>
+									<li>
+										<label class="radio-inline"><input type="radio" id="privateTroubleOrDemand2" name="privateTroubleOrDemand" value="あり"/>あり</label>
+									</li>
+								</ul>
+								<div class="toggleDiv">
+									<label>プライベートな悩み<span class="text-danger">&nbsp;*</span></label>
+									<span id="privateTroubleDetailsError" class="text-danger error"></span>
+									<textarea id="privateTroubleDetails" name="privateTroubleDetails" class="form-control" rows="4"></textarea>
+									<label>プライベートな要望<span class="text-danger">&nbsp;*</span></label>
+									<span id="privateDemandDetailsError" class="text-danger error"></span>
+									<textarea id="privateDemandDetails" name="privateDemandDetails" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<hr/>
+
+							<div class="form-group">
+								<label>営業・売上ＵＰに繋がるかもしれないトピック（現場での人材要望・プロジェクト動向など）<span class="text-danger">&nbsp;*</span></label>
+								<h6>※この項目で記述をした内容は全体に配信されます。</h6>
+								<ul class="list-inline">
+									<li>
+										<input type="radio"	id="topic1" name="topic" value="なし"/>なし
+									</li>
+									<li>
+										<input type="radio"	id="topic2" name="topic" value="あり"/>あり
+									</li>
+								</ul>
+								<div class="toggleDiv">
+									<label>内容<span class="text-danger">&nbsp;*</span></label>
+									<span id="topicDetailsError" class="text-danger error"></span>
+									<textarea id="topicDetails" name="topicDetails" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<hr/>
+
+							<h4>先週の実施タスク概要</h4>
+							<h6>※タスク名（タスク数量）場所を的確かつ端的に記載してください</h6>
+							<h6>※この項目で記述をした内容は全体に配信されます。</h6>
+							<div class="form-group">
+								<label>現場タスク<span class="text-danger">&nbsp;*</span></label>
+								<span id="mainTaskLastWeekError" class="text-danger error"></span>
+								<textarea id="mainTaskLastWeek" name="mainTaskLastWeek" class="form-control" rows="4"></textarea>
+							</div>
+							<div class="form-group">
+								<label>現場以外タスク</label>
+								<textarea id="otherTaskLastWeek" name="otherTaskLastWeek" class="form-control" rows="4" ></textarea>
+							</div>
+
+							<hr/>
+
+							<h4>今週の予定タスク概要</h4>
+							<h6>※タスク名（タスク数量）場所を的確かつ端的に記載してください</h6>
+							<h6>※この項目で記述をした内容は全体に配信されます。</h6>
+							<div class="form-group">
+								<label>現場タスク<span class="text-danger">&nbsp;*</span></label>
+								<span id="mainTaskThisWeekError" class="text-danger error"></span>
+								<textarea id="mainTaskThisWeek" name="mainTaskThisWeek" class="form-control" rows="4"></textarea>
+							</div>
+							<div class="form-group">
+								<label>現場以外タスク</label>
+								<textarea id="otherTaskThisWeek" name="otherTaskThisWeek" class="form-control" rows="4" ></textarea>	
+							</div>
+
+							<hr/>
+
+							<h4>自身で設定した目標の進捗状況</h4>
+							<div class="form-group">
+								<label>進捗の有無<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="radio"	id="progressStatus1" name="progressStatus" value="なし"/>なし
+									</li>
+									<li>
+										<input type="radio" id="progressStatus2" name="progressStatus" value="あり"/>あり
+									</li>
+								</ul>
+								<div class="toggleDiv">
+									<label>内容<span class="text-danger">&nbsp;*</span></label>
+									<span id="progressStatusDetailsError" class="text-danger error"></span>
+									<textarea id="progressStatusDetails" name="progressStatusDetails" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>課題の有無<span class="text-danger">&nbsp;*</span></label>
+								<ul class="list-inline">
+									<li>
+										<input type="radio"	id="issue1" name="issue" value="なし"/>なし
+									</li>
+									<li>
+										<input type="radio" id="issue2" name="issue" value="あり"/>あり
+									</li>
+								</ul>
+								<div class="toggleDiv">
+									<label>現在の課題<span class="text-danger">&nbsp;*</span></label>
+									<span id="issueDetailsError" class="text-danger error"></span>
+									<textarea id="issueDetails" name="issueDetails" class="form-control" rows="4"></textarea>
+									<label>課題の対策<span class="text-danger">&nbsp;*</span></label>
+									<span id="issueMesuresError" class="text-danger error"></span>								
+									<textarea id="issueMesures" name="issueMesures" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+
+							<hr/>
+
+							<div class="form-group">
+								<label>報告者コメント</label>
+								<textarea id="comment" name="comment" class="form-control" rows="4"></textarea>
+							</div>
+						</div>
+
+						<div class="panel-footer">
+							<input id = "openDialog" name = "submit" class="btn btn-primary" type="button" value="送信"/>
+							<span>※このボタンを押下するとThankYou/意見フォームの内容も送信されます</span>
+
+						</div>
+					</div>
+					<hr/>
+
+				</div>
+				<h2 class = "text-danger">※ここからは週報ではありません</h2>
+				<div class = "col-xs-12 .col-md-12 well">
+					<div class = "col-xs-12 col-md-12">
+						<ul class = "list-inline">
+							<li>
+							<img src = "./image/thankyou.gif" style = "margin-bottom: 10px"/>
+							</li>
+							<li>
+							<h2>ThankYou</h2>
+							</li>
+							<li>
+							<span>※必須入力ではありません</span>
+							</li>
+						</ul>
+						<hr/>
+					</div>
+					<div class = "col-xs-12 col-md-12">
+						<p>普段お世話になっている仲間に感謝の気持ちを伝えましょう。<br/>
+						なお、送信された内容は管理メンバーのみが閲覧し、<br/>
+						あなたのお名前を入力しない限り匿名性は保証されております。<br/>
+						送られた相手のお名前、メッセージは定期的に発表する予定です。<br/>
+						</p>
+					</div>
+
+					<div class = "col-xs-12 col-md-12 well">
+						<label>あなたの名前を公開するかどうか</label><br/>
+						<input type = "radio" id = "publicName1" name = "publicName" value='公開する'/>公開する<br/>
+						<input type = "radio" id = "publicName2" name = "publicName" value='公開しない'/>公開しない
+					</div>
+					<div class = "col-xs-12 col-md-12 well">
+						<label>相手のお名前</label><br/>
+						<input type = "text" id = "thankYouName" name = "thankYouName" />
+					</div>
+					<div class = "col-xs-12 col-md-12 well" style = 'background-color: rgba(255,255,255,0.3);'>
+						<label>メッセージ</label><br/>
+						<textarea class="form-control" name = "thankYouMessage" rows = "5" style = "resize: vertical;"></textarea>
+					</div>
+				</div>
+
+
+				<div class = "col-xs-12 .col-md-12 well">
+					<div class = "col-xs-12 col-md-12">
+						<ul class = "list-inline">
+							<li>
+							<img src = "./image/demand.gif" style = "margin-bottom: 10px"/>
+							</li>
+							<li>
+							<h2>意見フォーム</h2>
+							</li>
+							<li>
+							<span>※必須入力ではありません</span>
+							</li>
+						</ul>
+						<hr/>
+					</div>
+					<div class = "col-xs-12 col-md-12">
+						<p>社員の意見や要望を基に改善案を出したいと考えています。<br/>
+							ご対応よろしくお願いします。<br/>
+							なお、送信された内容は業務管理部のみが閲覧します。
+						</p>
+					</div>
+
+					<div class = "col-xs-12 col-md-12 well">
+						<label>あなたのお名前</label><br/>
+						<input type = "text" id = "name" name = "name" />
+					</div>
+					<div class = "col-xs-12 col-md-12 well">
+						<label>ご意見/ご要望など</label>
+						<textarea class="form-control" name = "opinionDemands" rows = "5"></textarea>
+					</div>
+
+				</div>
+			</div>
+
+			<input id = "openDialog2" name = "submit" class="btn btn-primary" type="button" value="送信"/>
+			<span>※このボタンを押下すると週報の内容も送信されます</span>
+
+		</form>
+	</div>
+
+	<div id="dialog" title="確認">
+			<div class="modal-body">
+				<p>送信しますか？</p>
+			</div>
+	</div>
+	<br><Div Align="right">Created by Masaki Goto with Ryosuke Kurokochi</Div>
+
+
+	<br/><br/>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./js/jquery.cookie.js"></script>
+	<script src="./js/jquery-ui-1.11.3/jquery-ui.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/bootstrap-datepicker.min.js"></script>
+	<script src="./js/locales/bootstrap-datepicker.ja.min.js"></script>
+
+
+	<script>
+
+		$(function() {
+
+			'use strict';
+
+			loadCookie();
+
+			var emailIndex = 0;
+			var errorFlag = false;
+
+			var date = new Date();
+			var thisMonday;
+			var thisFriday;
+
+			date.setDate(date.getDate() - date.getDay() + 1);
+ 			thisMonday = getDateString(date);
+
+			date.setDate(date.getDate() - date.getDay() + 5);
+ 			thisFriday = getDateString(date);
+
+			$('#localOfTo, #localOfCc').on('keyup', function() {
+
+				var addButton = $('#add' + $(this).attr('id').replace('localOf' , ''));
+				var local = $(this).val();
+
+				if (local == '' || local.length == 0) {
+					addButton.prop('disabled', true);
+				} else {
+					addButton.prop('disabled', false);
+				}
+			});
+
+			$('#addTo, #addCc').on('click', function() {
+
+				var suffix = $(this).attr('id').replace('add' , '');
+				var emailAddress = $('#localOf' + suffix).val() + $('#domainOf' + suffix).val();
+
+				addEmail(suffix, emailAddress, ++emailIndex);
+
+				$('#localOf' + suffix).val('');
+				$(this).prop('disabled', true);
+			}).prop('disabled', true);
+
+
+			$('#listOfTo, #listOfCc').on('click', '.btn-del', function() {
+				$(this).parent('div').parent('div').remove();
+			});
+
+
+			$('input[type=radio]').not("input[name=allEmployeeSendMail]").on('change', function() {
+				var detailsId = $(this).parents('div')[0];
+				if ($(this).val() == 'あり') {
+					$('div', detailsId).show();
+				} else {
+					$('div', detailsId).children('span').text('');
+					$('div', detailsId).children('textarea').val('');
+					$('div', detailsId).hide();
+				}
+			}).val(['なし']).prop('checked');
+
+			$('.toggleDiv').hide();
+
+			$('#periodFrom').val(thisMonday);
+
+			$('#periodTo').val(thisFriday);
+
+			$('.datepicker').datepicker({
+				autoclose : true,
+				format : 'yyyy-mm-dd',
+				language : 'ja',
+			});
+
+			//resizable = リサイズできるかどうか
+			//draggable = タイトルバーをドラッグして動かせるかどうか
+			$('#dialog').dialog({
+				modal: true,
+				autoOpen: false,
+				resizable: false,
+				draggable: false,
+				buttons: [
+				{
+					text: '送信',
+					id: 'sendReport',
+					class: 'btn btn-primary btn-sm',
+					click: function() {
+						$(this).dialog('close');
+						window.scroll(0, 0);
+					}
+				},
+				{
+					text: 'キャンセル',
+					class: 'btn btn-default btn-sm',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+				],
+				open: function() {
+					$("body").css({ overflow: 'hidden' })
+				},
+				beforeClose: function() {
+					$("body").css({ overflow: 'inherit' })
+				}
+			});
+
+			$('input[name=submit]').on('click', function() {
+					window.scroll(0, 0);
+				$( '#dialog' ).dialog( 'open' );
+			});
+
+			$('#sendReport').on('click', function() {
+				//event.preventDefault();
+				$('.error').text('');
+
+				var weeklyReport = { cc: [], to: [] };
+				var form = $('#form');
+
+				$(form.find(':input').not('.ignore').serializeArray()).each(function(i, e) {
+					if (e.name == 'sendTo') {
+						weeklyReport.to.push(e.value);
+					} else if (e.name == 'sendCc') {
+						weeklyReport.cc.push(e.value);
+					} else {
+						weeklyReport[e.name] = e.value;
+					}
+				});
+
+				console.log(weeklyReport);
+
+				$.ajax({
+					url: './index.php',
+					type: 'post',
+					datatype: 'json',
+					data: weeklyReport
+				}).done(function(data, status, xhr) {
+					console.log(data);
+					//saveCookie();
+					//location.href = './complete.html';
+				}).fail(function(xhr, status, error) {
+					saveCookie();
+					$.cookie('taskFlag', 'NO' , setConfigCookie(7));
+
+					var error;
+					var errorMessage;
+					var errorDetails;
+					var errorMessageArea = $('<p/>');
+					var errorDetailsArea = $('<p/>');
+
+
+					try {
+						error = $.parseJSON(xhr.responseText);
+					} catch (e) {
+						error = {};
+					}
+
+					if (error.message != null) {
+						errorMessage = $('<span/>').attr('class', 'text-danger error').text(error.message);
+
+						errorMessage.appendTo(errorMessageArea);
+						errorMessageArea.appendTo($('#errors'));
+					}
+
+					if (error.details != null) {
+						errorDetails = $('<span/>').attr('class', 'text-danger error').text(error.details).appendTo($('#errors'));
+
+						errorDetails.appendTo(errorDetailsArea);
+						errorDetailsArea.appendTo($('#errors'));
+					}
+					
+					if (500 <= xhr.status && xhr.status < 600 && errorMessage == null) {
+						//location.href = './complete.html?mail=failure';
+						
+					} else if (xhr.status == 400) {
+
+						$.each(error, function(name, value) {
+
+							if (name == 'firstNameError') {
+								$('#lastNameError').text('');
+							} else if (name == 'lastNameError') {
+								$('#firstNameError').text('');
+							}
+
+							if (name == 'domainOfFromError') {
+								$('#localOfFromError').text('');
+							} else if (name == 'localOfFromError') {
+								$('#domainOfFromError').text('');
+							}
+
+							if (name == 'domainOfToError') {
+								$('#localOfToError').text('');
+							} else if (name == 'localOfToError') {
+								$('#domainOfToError').text('');
+							}
+
+							if (name == 'periodFromError') {
+								$('#periodToError').text('');
+							} else if (name == 'periodToError') {
+								$('#periodFromError').text('');
+							}
+							$('#' + name).text(value);
+						});
+					}
+
+				});
+
+});
+
+function setConfigCookie(day){
+	//var cookieConfig = { expires: day };
+	var cookieConfig = { expires: day, secure: true };
+
+	return	cookieConfig;
+}
+
+function loadCookie() {
+
+	var staffId = $.cookie('staffId');
+	var firstName = $.cookie('firstName');
+	var lastName = $.cookie('lastName');
+	var sendFrom = $.cookie('sendFrom');
+	var sendTo = $.cookie('sendTo');
+	var sendCc = $.cookie('sendCc');
+	var mainTaskThisWeek = $.cookie('mainTaskThisWeek');
+	var otherTaskThisWeek = $.cookie('otherTaskThisWeek');
+
+	var taskFlag = $.cookie('taskFlag');
+
+	var flag = taskFlag == null ? '' : taskFlag;
+	console.log(flag);
+	// 今週タスク概要を今週タスク概要に入れる処理
+	if(flag == "OK"){
+		$('#mainTaskLastWeek').val(mainTaskThisWeek == null ? '' : mainTaskThisWeek);
+		$('#otherTaskLastWeek').val(otherTaskThisWeek == null ? '' : otherTaskThisWeek);
+	}
+
+	$('#staffId').val(staffId == null ? '' : staffId);
+	$('#firstName').val(firstName == null ? '' : firstName);
+	$('#lastName').val(lastName == null ? '' : lastName);
+
+	if (sendFrom != null) {
+		var delimitorIndex = sendFrom.indexOf( "@" );
+		if (0 <= delimitorIndex) {
+			$('#localOfFrom').val(sendFrom.substring(0, delimitorIndex));
+			$('#domainOfFrom').val([sendFrom.substring(delimitorIndex)]);
+		}
+	}
+
+	if (sendTo != null && sendTo != '') {
+		sendTo.split(',').forEach(function(e) {
+			if($('#sendTo0').val() != e){
+				addEmail('To', e, ++emailIndex);
+			}
+		});
+	}
+
+	if (sendCc != null && sendCc != '') {
+		sendCc.split(',').forEach(function(e) {
+			addEmail('Cc', e, ++emailIndex);
+		});
+	}
+}
+
+function saveCookie() {
+
+	var cookieConfig = setConfigCookie(30);
+	//var cookieConfig = { expires: 30, secure: true };
+	var toArray = [];
+	var ccArray = [];
+
+	$.cookie('staffId', $('#staffId').val(), cookieConfig);
+	$.cookie('firstName', $('#firstName').val(), cookieConfig);
+	$.cookie('lastName', $('#lastName').val(), cookieConfig);
+	$.cookie('sendFrom', $('#localOfFrom').val() + $('#domainOfFrom').val(), cookieConfig);
+	$.cookie('mainTaskThisWeek', $('#mainTaskThisWeek').val(), cookieConfig);
+	$.cookie('otherTaskThisWeek', $('#otherTaskThisWeek').val(), cookieConfig);
+
+	$('input[name=sendTo]').each(function() {
+		toArray.push($(this).val());
+	});
+	$('input[name=sendCc]').each(function() {
+		ccArray.push($(this).val());
+	});
+
+	$.cookie('sendTo', toArray, cookieConfig);
+	$.cookie('sendCc', ccArray, cookieConfig);
+}
+
+function addEmail(suffix, emailAddress, index) {
+
+	var emailId = 'send' + suffix + index;
+	var inputGroup = $('<div/>').attr('class', 'input-group').css('padding', '4px 4px 4px 0');
+	var buttonGroup =  $('<div/>').attr('class', 'input-group-btn');
+	var emailInput = $('<input/>',
+	{
+		type: 'text',
+		id: emailId,
+		name: 'send' + suffix
+	})
+	.attr('class', 'form-control ' + 'send' + suffix)
+	.attr('readonly', true)
+	.val(emailAddress);
+	var deleteButton =$('<button/>',
+	{
+		type: 'button',
+		id: 'delete' + suffix + index,
+		name: 'delete' + suffix
+	})
+	.attr('class', 'btn btn-sm btn-default btn-del')
+	.val(emailId);
+	var deleteIcon = $('<span/>').attr('class', 'glyphicon glyphicon-remove').attr('aria-hidden', 'true');
+
+	deleteIcon.appendTo(deleteButton);
+	deleteButton.appendTo(buttonGroup);
+	emailInput.appendTo(inputGroup);
+	buttonGroup.appendTo(inputGroup);
+	inputGroup.appendTo('#listOf' + suffix);
+}
+
+function getDateString(date) {
+
+			var year;
+			var month;
+			var day;
+
+    		if (date.getFullYear) {
+    			year = date.getFullYear();
+    		} else {
+    			year = date.getYear();
+    			if (year < 1900) {
+    				year += 1900;
+    			}
+    		}
+
+    		month = date.getMonth() + 1;
+    		if (month < 10) {
+    			month = '0' + month;
+    		}
+
+    		day = date.getDate();
+    		if (day < 10) {
+    			day = '0' + day;
+    		}
+
+    		return year + '-' + month + '-' + day;
+}
+});
+
+</script>
+</body>
+</html>
